@@ -58,10 +58,10 @@ library(vegan) # Este es un paquete para analisis de diversidad
 
 ````
 # Crear variabls para los archivos que exportamos de *Mothur*
-sharedfile = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.shared"
-taxfile = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.cons.tax.summary"
-mapfile = "other/habs_metadata_cleaned.csv"
-treefile = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.phylip.tre"
+shared_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.shared"
+tax_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.cons.tax.summary"
+metadata_file = "other/habs_metadata_cleaned.csv"
+tree_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.phylip.tre"
 
 # Import mothur data
 mothur_data <- import_mothur(mothur_shared_file = sharedfile,
