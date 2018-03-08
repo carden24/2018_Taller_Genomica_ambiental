@@ -43,7 +43,7 @@ La versión mas reciente de *Mothur* se encuentra [acá](https://github.com/moth
 
 Si es que esto no funciona se puede acceder a la terminal de windows directamente e iniciar *Mothur* desde ahí.
 
-Para acceder al terminal desde windows apretar:   ** [Windows] + R **  
+Para acceder al terminal desde windows apretar   **[Windows] + R**  
 Luego tipear **cmd** y apretar **Enter**
 
 Por predeterminado nos encontramos en el directorio del usuario actual ````c:\Users\erick````
@@ -61,10 +61,15 @@ Cuando llegamos al directorio donde se encuentran los ejecutables de *Mothur* po
 mothur.exe
 ````
 
-En esta nueva terminal es que tenemos que tipear los comandos. Alternativamente podemos ejecutar una serie de comandos directamente. Para hacer eso necesitamos tipear los comandos en un archivo de texto e.g stability.batch y ejecutar lo siguiente
+En esta nueva terminal es que tenemos que tipear los comandos. *Mothur* mantiene una lista de los ultimos archivos creados asi que no es necesario muchas veces retipear el nombre del archivo sino solo reemplazar su nombre con "current". Para saber cuales son los archivos o parametros  que *Mothur* considera como los mas actuales se puede usar el comando *get.current()*. Para cambiar estos parametros se puede usar el comando *set.current*.
+
+*Mothur* puede también recibir comandos directamente desde el terminal de Windows o ejecutar una serie de comandos escritos en un archivo de texto (un comando por linea). 
+
 
 ````
-mothur.exe stability.batch
+mothur "#fastq.info(fastq=test.fastq);get.current()"
+
+mothur stability.batch
 ````
 
 El archivo *stability.batch* contiene todos los comandos necesarios para el procesamiento estándar y se puede reutilizar para analizar otras muestras siempre y cuando se cambie el contenido del archivo *stability.files* que tiene la lista de archivos de secuencias.
@@ -73,15 +78,13 @@ El archivo *stability.batch* contiene todos los comandos necesarios para el proc
 
 *Mothur* necesita archivos extras para poder funcionar. Los archivos se encuentran en la carpeta MiSeq_SOP_files. Es necesario bajarlos y descomprimirlos en la carpeta de trabajo. Estos son los archivos que vamos a usar para el tutorial:
 
-- Alineamiento de referencia de *Silva* (Silva.bacteria.zip). Útil para tutorial, versiones mas recientes disponibles [acá](https://www.mothur.org/wiki/Silva_reference_files)
-- Set de entrenamiento del RDP formateado para *Mothur* (Trainset9_032012.pds.zip)
-- Set de entrenamiento del RDP formateado para *Mothur* (Trainset14_032015.pds.zip). Mothur mantiene la lista de taxonomías del RDP [acá](https://www.mothur.org/wiki/RDP_reference_files).
-- Taxonomía de referencia de Greengenes v13_8_99. Esta es la mas actual aunque es de Agosto 2013. *Mothur* mantiene una lista de las  versiones mas recientes [acá](https://www.mothur.org/wiki/Greengenes-formatted_databases).
+- Alineamiento de referencia de *Silva* versión 102(Silva.bacteria.zip). Útil para tutorial, versiones mas recientes disponibles [acá](https://www.mothur.org/wiki/Silva_reference_files).
+- Taxonomía del RDP formateado para *Mothur* (Trainset14_032015.pds.zip). Mothur mantiene la lista de taxonomías del RDP [acá](https://www.mothur.org/wiki/RDP_reference_files). *Mothur recomienda* usar la taxonomia de Greengenes. *Mothur* mantiene una lista de las  versiones mas recientes [acá](https://www.mothur.org/wiki/Greengenes-formatted_databases).
 
 
 ### Secuencias y archivos relacionados <a name="p2.3"></a>
 
-Finalmente necesitamos bajar las secuencias de Miseq y archivos relacionados al experimento. 
+Finalmente necesitamos bajar las secuencias de Miseq y archivos relacionados al experimento. El tutorial original usa 21 pares, esta usa 9 pares para hacer el tutorial mas corto.
 
 - Secuencias en formato fastq (Miseq SOP.zip)
 - Diseño experimental (mouse.time.design)
@@ -90,17 +93,17 @@ Finalmente necesitamos bajar las secuencias de Miseq y archivos relacionados al 
 
 ## Procesamiento inicial <a name="p3"></a>
 
-### Concatenacion de pares <a name="p3.1"></a>
+### Concatenación de pares <a name="p3.1"></a>
 
 El comando *make.contigs* une el par de secuencias que provienen de la misma molécula. La región hipervariable V4 del gen de ARNr tiene en promedio 364 bases por lo que secuenciarla de ambos lados con secuencias de 250 bases crea un gran solapamiento. *Mothur* une las secuencias y usa los valores de calidad para asignar bases en la región que se sobrelapa.  
 
 
 ```
-make.contigs(file=stability.files, processors=1)
+make.contigs(file=stability.files, processors=2)
 ```
 
-Este comando tambien genera archivos que se necesitan despues. 
-This command will also produce several files that you will need down the road:
+Este comando también genera archivos que se necesitan después. 
+:
   
 - *stability.trim.contigs.fasta* : Nuevas secuencias unidas
 - *stability.contigs.groups* : El grupo al cual pertenece cada secuencias
@@ -113,7 +116,7 @@ Para crear estadisdicas de las secuencias usamos el comando *summary.seqs*
  summary.seqs()
  ```
  
-### Remocion de secuencias anormales <a name="p3.2"></a>
+### Remoción de secuencias anormales <a name="p3.2"></a>
 
 Usamos el comando *screen.seqs*  para remover secuencias de acuerdo a su tamaño y el numero de bases ambiguas en ellas (Ns). Este paso remueve secuencias erróneas y artefactos.
 
@@ -142,10 +145,10 @@ count.seqs(name=stability.trim.contigs.good.names, group=stability.contigs.good.
 
 ## Alineamiento <a name="p4"></a> 
 
-En este paso alineamos nuestras secuencias con el alineamiento de referencia de SILVA, un alineamiento curado manualmente de gran calidad. Este es un archivo grande con casi 15000 secuencias y mas de 50000 posiciones. Para hacer nuestra trabajo mas fácil vamos a editar el alineamiento de Silva a las región que nos interesa (V4) y luego alinearemos nuestras secuencias con esta seleccion. Finalmente editaremos el alineamiento que incluye nuestras secuencias.  
+En este paso alineamos nuestras secuencias con el alineamiento de referencia de SILVA, un alineamiento curado manualmente de gran calidad. Este es un archivo grande con casi 15000 secuencias y mas de 50000 posiciones. Para hacer nuestra trabajo mas fácil vamos a editar el alineamiento de Silva a las región que nos interesa (V4) y luego alinearemos nuestras secuencias con esta selección. Finalmente editaremos el alineamiento que incluye nuestras secuencias.  
 
 
-El primer comando, *pcr.seqs*, edita el alineamiento de Silva a nuestra región de interés. Si es que no sabes las coordinadas de la región de interés, saltea el tutorial hasta el comando *align.seqs* y ahi usa la opcion *reference=silva.bacteria.fasta*.
+El primer comando, *pcr.seqs*, edita el alineamiento de Silva a nuestra región de interés. Si es que no sabes las coordinadas de la región de interés, saltea el tutorial hasta el comando *align.seqs* y ahí usa la opción *reference=silva.bacteria.fasta*.
 
 ```
 pcr.seqs(fasta=silva.bacteria.fasta, start=11894, end=25319, keepdots=F)
@@ -170,7 +173,7 @@ Utilizamos entonces el comando *screen.seqs* para eliminar secuencias.
 screen.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table, summary=stability.trim.contigs.good.unique.summary, start=1968, end=11550, maxhomop=8)
 ```
 
-Ahora podemos editar el alineamiento al remover posiciones que solo tienen gaps ya que no contribuyen con datos. El comando *screen.seqs* también necesita saber cual es el caracter que el alineamiento usa para indicar que no hay datos (trump character). En nuestro caso el alineamiento de Silva usa ".".
+Ahora podemos editar el alineamiento al remover posiciones que solo tienen gaps ya que no contribuyen con datos. El comando *screen.seqs* también necesita saber cual es el carácter que el alineamiento usa para indicar que no hay datos (trump character). En nuestro caso el alineamiento de Silva usa ".".
 
 ```
 filter.seqs(fasta=stability.trim.contigs.good.unique.good.align, vertical=T, trump=.)
