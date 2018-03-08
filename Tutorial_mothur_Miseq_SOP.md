@@ -265,7 +265,7 @@ total # of seqs:        128655
 
 ## Eliminación de errores <a name="p5"></a>
 
-Estos pasos reducen mejoran la calidad de los datos al eliminar errores del secuenciador, secuencias provenientes del huésped, y algunos artefactos generados por la PCR.  
+Estos pasos reducen mejoran la calidad de los datos al eliminar errores de secuenciación, secuencias provenientes del anfitrión, y algunos artefactos generados por la PCR.  
 
 ### Reducción de ruido <a name="p5.1"></a>
 
@@ -391,10 +391,6 @@ make.biom(shared=current, constaxonomy=current, metadata=mouse.dpw.metadata)
 ````  
 
 
-
-
-
-
 ## Análisis de filotipos   [Opcional]
 
 Si es que no nos interesa crear tablas de OTUs, especies definidas por similitud, sino trabajar con tablas de especies definidas por su clasificación taxonómica (filotipos) podemos usar los siguientes tres comandos con los datos ya procesados (sin artefactos y ruido).
@@ -421,7 +417,7 @@ stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.
 ```
 
 **Recomendación final**
-Una vez terminado el procesamiento hay que grabar los fastq originales, la lista de comando que usamos, los logs del programa (que tienen los comandos y los resultados), las tablas de OTUs (archivos SHARED), la clasificación de los OTUs (.cons.tax.summary), los metadatos, y el arbol filogenetico (archivo .phylip.tre) si es que nos interesa usar indices como UNIFRAC. Todos los demás resultados se puede borrar o comprimir.
+Una vez terminado el procesamiento hay que grabar los fastq originales, la lista de comando que usamos, los logs del programa (que tienen los comandos y los resultados), las tablas de OTUs (archivos SHARED), la clasificación de los OTUs (.cons.tax.summary), los metadatos, y el árbol filogenetico (archivo .phylip.tre) si es que nos interesa usar indices como UNIFRAC. Todos los demás resultados se puede borrar o comprimir.
  
 
 
