@@ -209,20 +209,18 @@ Las quimeras son artefactos de la PCR creados cuando la secuencias de una especi
 
 El primer paso detecta las quimeras. El segundo las remueve. Deben ejecutarse uno después del otro   
 ```
-chimera.vsearch(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.count_table, dereplicate=t)
-
+chimera.vsearch(fasta=current, count=current, dereplicate=t)
 remove.seqs(fasta=current, accnos=current)
 ```
 
 ### Remoción de lineajes indeseados <a name="p5.3"></a>
 
 En algunos casos nuestra PCR puede amplificar secuencias de organelos del huésped (mitocondrias, cloroplastos), secuencias de arqueas o eucariotas (con menos especificidad y poca sensibilidad) y otros artefactos. Estas secuencias deben ser detectadas y removidas pues no representan a la comunidad microbiana.  
-El primer paso es clasificar todas las secuencias de la comunidad con *classify.sequences* y luego remover los lineajes no deseados con *remove.lineajes*. El primer paso usa el método Bayesiano de clasificación, usando los archivos de referencia del RDP. 
+El primer paso es clasificar todas las secuencias de la comunidad con *classify.sequences* y luego remover los lineajes no deseados con *remove.lineajes*. El primer paso usa el método Bayesiano de clasificación, usando los archivos de referencia del RDP. Esta taxonomía es útil para el tutorial pero se recomienda que para trabajos reales se use la taxonomía de *Greengenes* (ver arriba). 
 
 
 ```
-classify.seqs(fasta=current, count=current, reference=trainset9_032012.pds.fasta, taxonomy=trainset9_032012.pds.tax, cutoff=80)
-
+classify.seqs(fasta=current, count=current, reference=trainset14_032015.pds.fasta, taxonomy=trainset14_032015.pds.tax, cutoff=80)
 remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota)
 ```
 
@@ -250,7 +248,6 @@ Una alternativa practica es usar *cluster.split*. Este método primero crea grup
 
 ```
 cluster.split(fasta=current, count=current, taxonomy=current, splitmethod=classify, taxlevel=4, cutoff=0.15)
-cluster.split(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table, taxonomy=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.pick.taxonomy, splitmethod=classify, taxlevel=4, cutoff=0.03)
 ```
 
 Ahora podemos usar las matrices de distancia para crear las tablas de OTUs. En este caso nos interesa trabajar a nivel de especie que es aproximadamente 3%.
@@ -272,7 +269,7 @@ classify.otu(list=current, count=current, taxonomy=current, label=0.03)
 Algunos métodos como Unifrac requieren saber la localizacion de cada otu en un arbol filogenetico del estudio. Este proceso se basa en el alineamiento y crea primero una matriz de distancias y luego usa esa matrix para crear un arbol basado en distancias (método Neighbour-joining.)
 
 ```
-dist.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta, output=lt, processors=8)
+dist.seqs(fasta=current, output=lt, processors=2)
 clearcut(phylip=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.phylip.dist)
 ```
 
