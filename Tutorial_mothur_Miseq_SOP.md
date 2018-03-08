@@ -388,12 +388,16 @@ Mothur genera muchos archivos intermedios con nombres complicados. La forma mas 
 ````
 make.biom(shared=current, constaxonomy=current, metadata=mouse.dpw.metadata)
 
-````
+````  
 
 
-## Analisis de filotipos
 
-Si es que no nos interesa crear tablas de OTUs, especies definidas por similitud, sino trabajar con tablas de especies definidas por su clasificacion taxonomica (filotipos) podemos usar los siguientes tres comandos con los datos ya procesados (sin artefactos y ruido).
+
+
+
+## Análisis de filotipos   [Opcional]
+
+Si es que no nos interesa crear tablas de OTUs, especies definidas por similitud, sino trabajar con tablas de especies definidas por su clasificación taxonómica (filotipos) podemos usar los siguientes tres comandos con los datos ya procesados (sin artefactos y ruido).
 
 ````
 phylotype(taxonomy=current, label=1);
@@ -402,7 +406,7 @@ classify.otu(list=current, taxonomy=current);
 ````
 
 El primer comando agrupa las secuencias según su taxonomía, la opción "label=1" especifica que vamos a trabajar con la taxonomía mas especifica. Si es que no especificamos este parámetro el resultado va crear listas de secuencias a diferente niveles de taxonomía. 
-El segundo comando crea la tabla de filotipos x muestras. El ultimo comando crea otra tabla con la taxonomía de consenso del filotipo.
+El segundo comando crea la tabla de filotipos x muestras. El último comando crea otra tabla con la taxonomía de consenso del filotipo.
 Hay que ser cuidadoso en escoger la tabla con la cual trabajar ya que tienen nombres similares.
 
 ```
@@ -415,6 +419,10 @@ stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.p
 stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.cons.tax.summary  <-Basado en filotipos
 
 ```
+
+**Recomendación final**
+Una vez terminado el procesamiento hay que grabar los fastq originales, la lista de comando que usamos, los logs del programa (que tienen los comandos y los resultados), las tablas de OTUs (archivos SHARED), la clasificación de los OTUs (.cons.tax.summary), los metadatos, y el arbol filogenetico (archivo .phylip.tre) si es que nos interesa usar indices como UNIFRAC. Todos los demás resultados se puede borrar o comprimir.
+ 
 
 
 
