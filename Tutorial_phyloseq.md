@@ -20,19 +20,22 @@
 10. [Datos de la sesion](#p10)
 
 ## Introducción <a name="introduction"></a>
-Este tutorial cubre el análisis de datos de comunidades microbianas usando el paquete *Phyloseq* en R. Los datos provienen del procesamiento de datos de Illumina Miseq on el programa *Mothur*.
+Este tutorial cubre el análisis de datos de comunidades microbianas usando el paquete *Phyloseq* en R. Los datos provienen del procesamiento de datos de Illumina Miseq on el programa *Mothur*. El tutorial esta basado parcialmente en el tutorial de Phylose por Michelle Berry disponible [acá](http://deneflab.github.io/MicrobeMiseq/demos/mothur_2_phyloseq.html).
 
-*Phyloseq* es un paquete para R enfocado en el analisis de datos de censos de microbioma. El articulo original se encuentra en la carpeta [Recursos](https://github.com/carden24/2018_Genomica_ambiental/tree/master/Recursos). Para mas detalles ir a su pagina original [acá](http://joey711.github.io/phyloseq/).
+*Phyloseq* es un paquete para R enfocado en el análisis de datos de censos de microbioma. El articulo original se encuentra en la carpeta *Recursos* de este repositorio. Para mas detalles ir a su pagina original [acá](http://joey711.github.io/phyloseq/).
 
-La gran ventaja que provee *Phyloseq* es que crea un objeto que organiza todos los datos relevantes a un experimento: tablas de OTUs, metadatos, la clasificación de los OTUs, y un árbol filogenético con todos los representantes de los OTUs. Phyloseq* provee funciones especializadas para la importacion, exportacion, manipulacion, y visualizacion de datos de microbioma.
+La gran ventaja que provee *Phyloseq* es que crea un objeto que organiza y agrupa todos los datos relevantes de un experimento: tablas de OTUs, metadatos, la clasificación de los OTUs, y un árbol filogenético con todos los representantes de los OTUs. *Phyloseq* provee ademas funciones especializadas para la importación, exportacion, manipulación, y visualización de datos de microbioma.
 
-![Imagen de objeto Phyloseq](https://carden24.github.com/images/Phyloseq.jpg)  
 **Esquema de un objeto de clase Phyloseq**  
+![Imagen de objeto Phyloseq](https://carden24.github.com/images/Phyloseq.jpg)  
+
 
 
 ## Preparativos <a name="prelim"></a>
 
-El primer paso recomendado es establecer el directorio o carpeta de trabajo. En este directorio R busca los archivos y es también ahí donde se guardan los resultados exportados. Una segunda recomendación es crear una carpeta por cada análisis mayor e idealmente guardar ahí el script de análisis.  
+El primer paso recomendado es establecer el directorio o carpeta de trabajo. En este directorio R busca los archivos y es también ahí donde se guardan los resultados exportados. Es recomendado que en general la creación de una carpeta por cada análisis mayor e idealmente guardar ahí también el script de análisis.  
+
+Abrir Rstudio y ahí crear un nuevo script en blanco con **Ctrl** + **Shift** + **N**. Es acá donde vamos a ir escribiendo los comandos y ejecutando cada linea con **Ctrl** + **R**. En R el símbolo **#** es usado para anotar la linea de código. Todo lo que viene después del # es ignorado por el programa pero es útil para saber la función de la linea o bloque de código.
 
 ````
 setwd("E:/Libraries/Dropbox/tutorial/")
@@ -40,16 +43,35 @@ getwd() # Este comando reporta el directorio actual.
 
 ````
 
-El segundo paso es cargar la libreria *Phyloseq* para tener acceso a las funciones requeridas
+El segundo paso es cargar la librería *Phyloseq* para tener acceso a las funciones requeridas
 ````
 library(phyloseq)
 library(ggplot2) # Este paquete es requerido para graficar los resultados
+library(vegan) # Este es un paquete para analisis de diversidad
+
 ````
 
 
 ## Importación de datos <a name="p1"></a>
 
-Phyloseq tiene una funcion para la importacion de archivos de mothur. Necesitamos acceder 
+*Phyloseq* tiene una función para la importación de archivos de *Mothur*. Es necesario copia y pegar los archivos de la sesión anterior en la carpeta de trabajo y luego usar el siguiente código en R.
+
+````
+# Crear variabls para los archivos que exportamos de *Mothur*
+sharedfile = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.shared"
+taxfile = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.cons.tax.summary"
+mapfile = "other/habs_metadata_cleaned.csv"
+treefile = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.phylip.tre"
+
+# Import mothur data
+mothur_data <- import_mothur(mothur_shared_file = sharedfile,
+  mothur_constaxonomy_file = taxfile)
+
+# Import sample metadata
+map <- read.csv(mapfile)
+
+````
+
 
 ### Segunda parte <a name="p1.1"></a>
 
