@@ -317,32 +317,44 @@ Si es que trabajamos con Greengenes
 classify.seqs(fasta=current, count=current, reference=gg_13_8_99.fasta, taxonomy=gg_13_8_99.gg.tax, cutoff=80)
 remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-mitochondria-unknown-Archaea-Eukaryota)
 
+>summary.seqs(count=current)
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       376     249     0       3       1
+2.5%-tile:      1       376     252     0       3       2950
+25%-tile:       1       376     252     0       4       29496
+Median:         1       376     252     0       4       58992
+75%-tile:       1       376     253     0       5       88487
+97.5%-tile:     1       376     253     0       6       115033
+Maximum:        1       376     256     0       6       117982
+Mean:   1       376     252.465 0       4.37191
+# of unique seqs:       2259
+total # of seqs:        117982
+
 ```
 
-**Opcional:**
-También se pueden remover muestras que de comunidades modelos utilizando el comando *remove.seqs*. El tutorial de Miseq original explica como utilizar comunidades modelos (con abundancias definidas) para calcular tasas de error.
+El tutorial de Miseq original explica como utilizar comunidades modelos (con abundancias definidas) para calcular tasas de error. Si es que planeas usar este tipo de control positivo puedes ver con mas detalles el análisis en el [tutorial original de Mothur](https://www.mothur.org/wiki/MiSeq_SOP). En este caso simplemente vamos a remover las  muestras que de comunidades modelos utilizando el comando *remove.seqs*. 
 
 
 ```
 remove.groups(count=current, fasta=current, taxonomy=current, groups=Mock)
 ```
 
-## Creacion de tablas de OTUS <a name="p6"></a>
+## Creación de tablas de OTUS <a name="p6"></a>
 
-El siguiente objetivo es agrupar las secuencias en unidades taxonómicas operacionales (OTUs), grupos de secuencias definidos por la similitud entre ellas. La forma tradicional es primero crear una matriz de distancias con *dist.seqs* y luego crear grupos de secuencias con esta matriz con *cluster*. Este método es muy lento cuando se trabajan con miles de secuencias. 
-
-````
-No ejecutar estos comandos
-dist.seqs(fasta=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.fasta, cutoff=0.03)
-cluster(column=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.dist, count=stability.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.pick.count_table)
+El siguiente objetivo es agrupar las secuencias en unidades taxonómicas operacionales (OTUs), grupos de secuencias definidos por la similitud entre ellas. La forma tradicional es primero crear una matriz de distancias con *dist.seqs* y luego crear grupos de secuencias con esta matriz con *cluster*. Este método es muy lento cuando se trabajan con miles de secuencias ya que la matriz ocupa mucho espacio en memoria. 
 
 ````
+No ejecutar estos comandos !
+dist.seqs(fasta=current, cutoff=0.03)
+cluster(column=current, count=current)
 
-Una alternativa practica es usar *cluster.split*. Este método primero crea grupos basándose en la matriz de distancia o en la clasificación taxonómica de las secuencias y posteriormente aplica los métodos de agrupamientos sobre las selecciones individuales. Es este caso usaremos la clasificación taxonómica para separar los grupos a nivel de orden (nivel taxonómico), y luego aplicaremos el método algoritmo *opticlust* para crear OTUs. El comando *cluster.split* necesita una valor para saber hasta que porcentaje de similitud hay que crear las matrices de distancia. Para este algoritmo, cutoff=0.03 es suficiente, para el método *average neighbour* se recomiendan valores mas altos que el parametro final (usar 0.15 si es que se quiere trabajar a nivel de especies ).
+````
+
+La alternativa practica es usar *cluster.split*. Este método primero crea grupos basándose en la matriz de distancia o en la clasificación taxonómica de las secuencias y posteriormente aplica los métodos de agrupamientos sobre las selecciones individuales. Es este caso usaremos la clasificación taxonómica para separar los grupos a nivel de orden (nivel taxonómico), y luego aplicaremos el método algoritmo *opticlust* para crear OTUs. El comando *cluster.split* necesita una valor para saber hasta que porcentaje de similitud hay que crear las matrices de distancia. Para este algoritmo, cutoff=0.03 es suficiente, para el método *average neighbour* se recomiendan valores mas altos que el parametro final (usar 0.15 si es que se quiere trabajar a nivel de especies ).
 
 
 ```
-cluster.split(fasta=current, count=current, taxonomy=current, splitmethod=classify, taxlevel=4, cutoff=0.15)
+cluster.split(fasta=current, count=current, taxonomy=current, splitmethod=classify, taxlevel=4, cutoff=0.03)
 ```
 
 Ahora podemos usar las matrices de distancia para crear las tablas de OTUs. En este caso nos interesa trabajar a nivel de especie que es aproximadamente 3%.
@@ -361,22 +373,55 @@ classify.otu(list=current, count=current, taxonomy=current, label=0.03)
 
 ## Creación de arboles filogenético <a name="p7"></a>
 
-Algunos métodos como Unifrac requieren saber la localizacion de cada otu en un arbol filogenetico del estudio. Este proceso se basa en el alineamiento y crea primero una matriz de distancias y luego usa esa matrix para crear un arbol basado en distancias (método Neighbour-joining.)
+Algunos métodos como Unifrac requieren saber la localización de cada OTU en un árbol filogenético de este proyecto. Este proceso se basa en el alineamiento y crea primero una matriz de distancias y luego usa esa matriz para crear un árbol basado en distancias (método Neighbour-joining).
 
 ```
-dist.seqs(fasta=current, output=lt, processors=2)
-clearcut(phylip=stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.phylip.dist)
+dist.seqs(fasta=current, output=lt)
+clearcut(phylip=current)
 ```
 
 ## Exportación de datos <a name="p8"></a>
 
-Mothur genera muchos archivos intermedios con nombres complicados. La forma mas fácil de transferir estos archivos a otros programas es convirtiéndolo a un objeto en formato biom. Para mas información de este formato ver [acá] http://biom-format.org/documentation/biom_format.html. 
+Mothur genera muchos archivos intermedios con nombres complicados. La forma mas fácil de transferir estos archivos a otros programas es convirtiéndolo a un objeto en formato biom. Este formato es una forma eficiente y facil de procesar (para las computadoras). Para mas información de este formato ver [acá] http://biom-format.org/documentation/biom_format.html. 
 
 
 ````
-make.biom(shared=final.tx.1.subsample.1.pick.shared, constaxonomy=final.tx.1.cons.taxonomy, metadata=metadata.txt)
+make.biom(shared=current, constaxonomy=current, metadata=mouse.dpw.metadata)
 
 ````
+
+
+## Analisis de filotipos
+
+Si es que no nos interesa crear tablas de OTUs, especies definidas por similitud, sino trabajar con tablas de especies definidas por su clasificacion taxonomica (filotipos) podemos usar los siguientes tres comandos con los datos ya procesados (sin artefactos y ruido).
+
+````
+phylotype(taxonomy=current, label=1);
+make.shared(list=current, count=current);
+classify.otu(list=current, taxonomy=current);
+````
+
+El primer comando agrupa las secuencias según su taxonomía, la opción "label=1" especifica que vamos a trabajar con la taxonomía mas especifica. Si es que no especificamos este parámetro el resultado va crear listas de secuencias a diferente niveles de taxonomía. 
+El segundo comando crea la tabla de filotipos x muestras. El ultimo comando crea otra tabla con la taxonomía de consenso del filotipo.
+Hay que ser cuidadoso en escoger la tabla con la cual trabajar ya que tienen nombres similares.
+
+```
+Archivos "Shared":
+stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.shared  <-Basado en OTUs
+stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.pick.tx.shared           <-Basado en filotipos
+
+Archivos de taxonomia de consenso
+stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pds.wang.pick.pick.tx.1.cons.tax.summary              <-Basado en OTUs
+stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.cons.tax.summary  <-Basado en filotipos
+
+```
+
+
+
+
+
+
+
 
 
 
