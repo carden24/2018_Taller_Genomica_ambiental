@@ -95,7 +95,7 @@ Finalmente necesitamos bajar las secuencias de Miseq y archivos relacionados al 
 
 ### Concatenación de pares <a name="p3.1"></a>
 
-El comando *make.contigs* une el par de secuencias que provienen de la misma molécula. La región hipervariable V4 del gen de ARNr tiene en promedio 364 bases por lo que secuenciarla de ambos lados con secuencias de 250 bases crea un gran solapamiento. *Mothur* une las secuencias y usa los valores de calidad para asignar bases en la región que se sobrelapa.  
+El comando *make.contigs* une el par de secuencias que provienen de la misma molécula. Los primers que se usan para amplificar la region V4 son los 515F y 806R por lo que el producto deber ser de unos 290 bases y al secuenciar este producto por ambos lados con secuencias de 250 bases crea un gran solapamiento. *Mothur* une las secuencias y usa los valores de calidad para asignar bases en la región que se sobrelapa.  
 
 
 ```
@@ -111,21 +111,46 @@ Este comando también genera archivos que se necesitan después.
   
 Para crear estadisdicas de las secuencias usamos el comando *summary.seqs*
 
+
+```
+summary.seqs()
  
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       248     248     0       3       1
+2.5%-tile:      1       252     252     0       3       3810
+25%-tile:       1       252     252     0       4       38091
+Median:         1       252     252     0       4       76181
+75%-tile:       1       253     253     0       5       114271
+97.5%-tile:     1       253     253     6       6       148552
+Maximum:        1       502     502     249     243     152360
+Mean:           1       252.811 252.811 0.70063         4.44854
+# of Seqs:      152360
  ```
- summary.seqs()
- ```
+El resultado muestra que la mayoría de secuencias tienen entre 248 y 253 bases, y hay algunas secuencias que tienen hasta 502 bases lo cual sugiere que probablemente no se unieron bien ya que esperamos un producto de 290 bases como maximo.  
+
  
 ### Remoción de secuencias anormales <a name="p3.2"></a>
 
-Usamos el comando *screen.seqs*  para remover secuencias de acuerdo a su tamaño y el numero de bases ambiguas en ellas (Ns). Este paso remueve secuencias erróneas y artefactos.
+Usamos el comando *screen.seqs*  para remover secuencias de acuerdo a su tamaño y el numero de bases ambiguas en ellas (Ns). Este paso remueve secuencias erróneas y artefactos. En este caso removemos secuencias con bases ambiguas y secuencias mas largas que 275 bp. Este numero depende del tamaño del la región definida por los primers.
+
 
  
 ```
-screen.seqs(fasta=stability.trim.contigs.fasta, group=stability.contigs.groups, maxambig=0, maxlength=275)
-```
+screen.seqs(fasta=current, group=current, summary=current, maxambig=0, maxlength=275)
 
-En este caso removemos secuencias con bases ambiguas y secuencias mas largas que 275 bp. Este numero depende del tamaño del la región definida por los primers.
+
+>summary.seqs()
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       250     250     0       3       1
+2.5%-tile:      1       252     252     0       3       3222
+25%-tile:       1       252     252     0       4       32219
+Median:         1       252     252     0       4       64437
+75%-tile:       1       253     253     0       5       96655
+97.5%-tile:     1       253     253     0       6       125651
+Maximum:        1       270     270     0       12      128872
+Mean:   1       252.462 252.462 0       4.36693
+# of Seqs:      128872
+```
  
 
 ### Dereplicación <a name="p3.3"></a>
@@ -134,13 +159,14 @@ En este paso removemos secuencias idénticas para reducir la carga en la computa
 Este es un paso no cambia la calidad de las secuencias pero reduce la carga computacional (tiempo de procesamiento y memoria requerida).
 
 ```
-unique.seqs(fasta=stability.trim.contigs.good.fasta)
+unique.seqs(fasta=current)
 ``` 
 
 El protocolo requiere que usemos *count.seqs* para crear una tabla que registra las secuencias repetidas.
 
 ```
-count.seqs(name=stability.trim.contigs.good.names, group=stability.contigs.good.groups)
+count.seqs(name=current, group=current)
+
 ```
 
 ## Alineamiento <a name="p4"></a> 
@@ -164,32 +190,78 @@ Ahora podemos alinear las secuencias al alineamiento maestro de Silva para la re
 
 
 ```
-align.seqs(fasta=stability.trim.contigs.good.unique.fasta, reference=silva.v4.fasta)
+align.seqs(fasta=current, reference=silva.v4.fasta)
 ```
 
-Luego de alinear las secuencias podemos ejecutar *summary.seqs()* de nuevo  para ver estadísticas sobre distribución de las secuencias en el alineamiento. Al evaluar el alineamiento podemos ver que la mayoría de las secuencias empieza en la posición 1968 y termina en la posición 11550. Esto es útil detectar secuencias con muchas inserciones o con muchos homopolímeros ya que estas tienden a ser erróneas.  
-Utilizamos entonces el comando *screen.seqs* para eliminar secuencias.
+Luego de alinear las secuencias podemos ejecutar *summary.seqs()* de nuevo  para ver estadísticas sobre distribución de las secuencias en el alineamiento. 
+
+````
+summary.seqs(count=current)
+
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1250    10693   250     0       3       1
+2.5%-tile:      1968    11550   252     0       3       3222
+25%-tile:       1968    11550   252     0       4       32219
+Median:         1968    11550   252     0       4       64437
+75%-tile:       1968    11550   253     0       5       96655
+97.5%-tile:     1968    11550   253     0       6       125651
+Maximum:        1982    13400   270     0       12      128872
+Mean:           1967.99 11550   252.462 0       4.36693
+# of unique seqs:       16426
+total # of seqs:        128872
+````
+
+Al evaluar el alineamiento podemos ver que la mayoría de las secuencias empieza en la posición 1968 y termina en la posición 11550. Esta evaluación es útil detectar secuencias con muchas inserciones o que empiezan o terminan muy tarde. En este paso también podemos remover secuencias con muchos homopolímeros ya que estas tienden a ser erróneas.  
+
+Utilizamos entonces el comando *screen.seqs* para eliminar secuencias que empiezan mucho antes o terminan mucho despues ademas de secuencias con muchos homopolímeros.
 ```
-screen.seqs(fasta=stability.trim.contigs.good.unique.align, count=stability.trim.contigs.good.count_table, summary=stability.trim.contigs.good.unique.summary, start=1968, end=11550, maxhomop=8)
+screen.seqs(fasta=current, count=current, start=1968, end=11550, maxhomop=8)
+
+>summary.seqs(count=current)
+
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1965    11550   250     0       3       1
+2.5%-tile:      1968    11550   252     0       3       3217
+25%-tile:       1968    11550   252     0       4       32164
+Median:         1968    11550   252     0       4       64328
+75%-tile:       1968    11550   253     0       5       96492
+97.5%-tile:     1968    11550   253     0       6       125439
+Maximum:        1968    13400   270     0       8       128655
+Mean:   1968    11550   252.463 0       4.36666
+# of unique seqs:       16298
+total # of seqs:        128655
+
 ```
 
-Ahora podemos editar el alineamiento al remover posiciones que solo tienen gaps ya que no contribuyen con datos. El comando *screen.seqs* también necesita saber cual es el carácter que el alineamiento usa para indicar que no hay datos (trump character). En nuestro caso el alineamiento de Silva usa ".".
+Ahora podemos editar el alineamiento y  remover posiciones que solo tienen gaps ya que no contribuyen con datos. El comando *screen.seqs* también necesita saber cual es el carácter que el alineamiento usa para indicar que no hay datos (trump character). En nuestro caso el alineamiento de Silva usa ".".
 
 ```
-filter.seqs(fasta=stability.trim.contigs.good.unique.good.align, vertical=T, trump=.)
+filter.seqs(fasta=current, vertical=T, trump=.)
+```
+
+Ejecutamos *unique.seqs* una vez mas ya que algunas secuencias pueden ser idénticas luego del alineamiento. 
+
+```
+unique.seqs(fasta=current, count=current)
 ```
 
 Finalmente ejecutamos summary.seqs() y vemos que el alineamiento tiene muchas menos posiciones lo cual hace el calculo posterior mas fácil. 
-````
-summary.seqs()
-````
 
-**Opcional:**
-También podemos ejecutar *unique.seqs* ya que algunas secuencias pueden ser idénticas luego del alineamiento. 
+````
+summary.seqs(count=current)
 
-```
-unique.seqs()
-```
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       376     249     0       3       1
+2.5%-tile:      1       376     252     0       3       3217
+25%-tile:       1       376     252     0       4       32164
+Median:         1       376     252     0       4       64328
+75%-tile:       1       376     253     0       5       96492
+97.5%-tile:     1       376     253     0       6       125439
+Maximum:        1       376     256     0       8       128655
+Mean:   1       376     252.462 0       4.36666
+# of unique seqs:       16295
+total # of seqs:        128655
+````
 
 ## Eliminación de errores <a name="p5"></a>
 
@@ -197,7 +269,7 @@ Estos pasos reducen mejoran la calidad de los datos al eliminar errores del secu
 
 ### Reducción de ruido <a name="p5.1"></a>
 
-El primer paso es agrupar secuencias altamente similares con *pre.cluster*. Este comando primero agrupa secuencias que difieran en unas cuantas posiciones, este caso no mas de dos diferencias (1 por cada 100 bases). Si hay varias secuencias similar el algoritmo escoge a la secuencia mas abundante como la secuencias correcta y asume que las demás son diferentes debido a errores de secuenciación.
+El primer paso es agrupar secuencias altamente similares con *pre.cluster*. Este comando primero agrupa secuencias que difieran en unas cuantas posiciones, este caso no mas de dos diferencias (1 por cada 100 bases). Si hay varias secuencias similar el algoritmo escoge a la secuencia mas abundante como la secuencias correcta y asume que las demás son diferentes debido a errores de secuenciación. Este paso no remueve secuencias.
 
 ```
 pre.cluster(fasta=current, count=current, diffs=2)
@@ -211,17 +283,40 @@ El primer paso detecta las quimeras. El segundo las remueve. Deben ejecutarse un
 ```
 chimera.vsearch(fasta=current, count=current, dereplicate=t)
 remove.seqs(fasta=current, accnos=current)
+
+>summary.seqs(count=current)
+
+                Start   End     NBases  Ambigs  Polymer NumSeqs
+Minimum:        1       376     249     0       3       1
+2.5%-tile:      1       376     252     0       3       2954
+25%-tile:       1       376     252     0       4       29537
+Median:         1       376     252     0       4       59073
+75%-tile:       1       376     253     0       5       88609
+97.5%-tile:     1       376     253     0       6       115191
+Maximum:        1       376     256     0       8       118144
+Mean:   1       376     252.464 0       4.37541
+# of unique seqs:       2279
+total # of seqs:        118144
+
 ```
+vsearch removió el 8.2% de las secuencias (n=10511), y se redujo además el numero de secuencias únicas lo cual hace mas fácil el proceso.  
+
 
 ### Remoción de lineajes indeseados <a name="p5.3"></a>
 
-En algunos casos nuestra PCR puede amplificar secuencias de organelos del huésped (mitocondrias, cloroplastos), secuencias de arqueas o eucariotas (con menos especificidad y poca sensibilidad) y otros artefactos. Estas secuencias deben ser detectadas y removidas pues no representan a la comunidad microbiana.  
-El primer paso es clasificar todas las secuencias de la comunidad con *classify.sequences* y luego remover los lineajes no deseados con *remove.lineajes*. El primer paso usa el método Bayesiano de clasificación, usando los archivos de referencia del RDP. Esta taxonomía es útil para el tutorial pero se recomienda que para trabajos reales se use la taxonomía de *Greengenes* (ver arriba). 
+En algunos casos nuestra PCR puede amplificar secuencias de organelos del huésped (mitocondrias y cloroplastos), secuencias de arqueas o eucariotas (con menos especificidad y poca sensibilidad) y otros productos no especificos. Estas secuencias deben ser detectadas y removidas pues no representan a la comunidad microbiana.  
+El primer paso es clasificar todas las secuencias de la comunidad con *classify.sequences* y luego remover los lineajes no deseados con *remove.lineage*. El primer paso usa el método Bayesiano de clasificación, y la taxonomica de referencia del RDP. Esta taxonomía es útil para el tutorial pero se recomienda que para trabajos reales se use la taxonomía de *Greengenes* que clasifica hasta nivel de especies disponible [acá](https://www.mothur.org/wiki/Greengenes-formatted_databases). 
 
 
 ```
 classify.seqs(fasta=current, count=current, reference=trainset14_032015.pds.fasta, taxonomy=trainset14_032015.pds.tax, cutoff=80)
-remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-unknown-Archaea-Eukaryota)
+remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-mitochondria-unknown-Archaea-Eukaryota)
+
+
+Si es que trabajamos con Greengenes
+classify.seqs(fasta=current, count=current, reference=gg_13_8_99.fasta, taxonomy=gg_13_8_99.gg.tax, cutoff=80)
+remove.lineage(fasta=current, count=current, taxonomy=current, taxon=Chloroplast-Mitochondria-mitochondria-unknown-Archaea-Eukaryota)
+
 ```
 
 **Opcional:**
