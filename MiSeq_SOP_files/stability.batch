@@ -1,13 +1,11 @@
 pcr.seqs(fasta=silva.bacteria.fasta, start=11894, end=25319, keepdots=F);
 rename.file(input=silva.bacteria.pcr.fasta, new=silva.v4.fasta)
-get.current()
 make.contigs(file=stability.files, processors=2)
 summary.seqs()
 screen.seqs(fasta=current, group=current, summary=current, maxambig=0, maxlength=275)
 summary.seqs()
 unique.seqs(fasta=current)
 count.seqs(name=current, group=current)
-get.current()
 align.seqs(fasta=current, reference=silva.v4.fasta)
 summary.seqs(count=current)
 screen.seqs(fasta=current, count=current, start=1968, end=11550, maxhomop=8)
