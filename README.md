@@ -23,10 +23,11 @@ El protocolo operativo estándar (SOP) para datos de Miseq usando *Mothur* se en
 - Si es que van a trabajar con datos de 454(pirosecuenciamiento), *mothur* tambien tiene un protocolo recomendado[acá](<http://www.mothur.org/wiki/454_SOP>).
 
   
-3. Otros archivos (en la carpeta *Recursos*):
+3. Otros archivos (en la carpeta *Recursos*):  
+Publicaciones, libros, y otras herramientas. Organizados por temas. Incluyendo
 - *Tree diversity analysis*, libro creado por Roeland Kindt y Richard Coe.  
-  Un libro corto sobre análisis de diversidad. Contiene explicaciones detalladas y codigos para hacer análisis de diversidad en R.  
-  Tambien lo puedes encontrar gratis en su pagina [acá.](<http://www.worldagroforestry.org/resources/databases/tree-diversity-analysis>)
+  Un libro corto sobre análisis de diversidad. Contiene explicaciones detalladas y códigos para hacer análisis de diversidad en R.  
+  También lo puedes encontrar gratis en su pagina [acá.](<http://www.worldagroforestry.org/resources/databases/tree-diversity-analysis>)
 - *The madness of microbiome : Attempting to find consensus “best practice” for 16S microbiome studies*, por Jolinda Pollock, Laura Glendinning, Trong Wisedchanwe, y Mick Watson.  
   Un review sobre todas las consideraciones que tener en estudios de microbioma. Cubre temas como almacenamiento de muestras, extracción de ADN, análisis, etc.  
 - *Multivariate analyses in microbial ecology* por Alban Ramette. Un minireview disponible tambien [aca.](<http://dx.doi.org/10.1111/j.1574-6941.2007.00375.x>)
