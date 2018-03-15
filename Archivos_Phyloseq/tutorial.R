@@ -17,4 +17,10 @@ load("un_objeto.Rdata")
 
 library(phyloseq)
 
+
+
+
+
+
+
 data("GlobalPatterns")
