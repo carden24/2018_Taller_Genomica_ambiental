@@ -377,7 +377,7 @@ Para el análisis de variación multivariado vamos a utilizar el paquete *vegan*
 # para que el resultado sea reproducible.
 set.seed(1)  
   
-# Exportación de la tabla de OTUs
+# Exportación de la tabla de disimilitud de OTUs
 dist_otus = phyloseq::distance(rare_global, method = "bray")
 
 # Exportacion de la tabla de metadatos o del dise~o experimental
@@ -385,7 +385,7 @@ tabla_metadatos = data.frame(sample_data(rare_global))
 
 summary(tabla_metadatos)
 
-adonis(tabla_otus ~ SampleType, data = tabla_metadatos)
+adonis(dist_otus ~ SampleType, data = tabla_metadatos)
 #
 #Call:
 #adonis(formula = tabla_otus ~ SampleType, data = tabla_metadatos) 
