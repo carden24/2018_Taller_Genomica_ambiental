@@ -324,6 +324,8 @@ Podemos hacer análisis de diversidad alfa directamente con la función *plot_ri
 
 ````
 # Graficando directamente
+set.seed(191931)
+rare_global <-rarefy_even_depth(GlobalPatterns, rngseed=TRUE)
 plot_richness (rare_global,color="SampleType" )
 plot_richness (mothur_data, color="dpw") 
 
