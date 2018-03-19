@@ -190,12 +190,13 @@ ggplot(sample_sum_df, aes(x = sum)) +
   xlab("Read counts")  + ylab("Frequency")
 ````
 
+**Distribución de lecturas**  
+![Imagen de objeto Phyloseq](https://carden24.github.com/images/distribucion_lecturas.png) 
+
+
 ### Selección y Filtración de muestras <a name="p4.1"></a>
 
 Si es que hay muestras con pocas lecturas o controles podemos removerlas del set de datos usando el comando *prune_samples()*. Este comando puede utilizar una lista de muestras o también una lista de Verdaderos/FALSO
-
-
-
 
 ````
 # Si quisiéramos remover del set de mothur las muestras que tengan menos de 3000 lecturas
