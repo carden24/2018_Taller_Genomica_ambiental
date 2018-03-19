@@ -63,7 +63,6 @@ Finalmente vamos a cargar unas funciones contenidas en el archivo "miseqR.R". Es
 source("miseqR.R")
 ````
 
-
 ## Creación de objeto Phyloseq <a name="p3"></a>
 
 ### Importación de datos <a name="p3.1"></a>
@@ -101,11 +100,10 @@ metadata = read.delim(metadata_file, header=T,row.names = 1)
 metadata = sample_data(metadata) # Convierta la tabla de metadatos en una tabla para phyloseq
 mothur_data = merge_phyloseq(mothur_data0, metadata)
 
-> mothur_data
-otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
-sample_data() Sample Data:       [ 19 samples by 1 sample variables ]
-tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
-
+mothur_data
+#otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
+#sample_data() Sample Data:       [ 19 samples by 1 sample variables ]
+#tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
 ````
 
 ### Accesión de componentes<a name="p3.2"></a>
@@ -113,28 +111,26 @@ tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
 El objeto *mothur_data* es un objeto de clase *Phyloseq* de nivel experimento. Para ver la estructura de este objeto simplemente podemos escribir su nombre en la consola.
 
 ````
->mothur_data
-
-phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
-tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
-
+mothur_data
+#phyloseq-class experiment-level object
+#otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
+#tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
 ````
 
 Una vez que tenemos este objeto podemos usar diferente funciones para acceder a los diferentes componentes del objeto
 
 ```
-# Poner dentro del paréntesis el nombre del objeto
+# Poner dentro del paréntesis el nombre del objeto !
 
-otu_table()			# Reporta la tabla de OTUs
-sample_data() 			# Reporta la información sobre las muestras como metadatos o datos experimentales
-tax_table()   			# Reporta la tabla de taxonómica de los OTUs
+otu_table(mothur_data)			# Reporta la tabla de OTUs
+sample_data(mothur_data) 			# Reporta la información sobre las muestras como metadatos o datos experimentales
+tax_table(mothur_data)   			# Reporta la tabla de taxonómica de los OTUs
 
-ntaxa() 			# Reporta el numero de OTUs
-nsamples() 			# Reporta el numero de muestras
+ntaxa(mothur_data) 			# Reporta el numero de OTUs
+nsamples(mothur_data) 			# Reporta el numero de muestras
 
-sample_names()			# Reporta los nombres de las muestras
-taxa_names() 			# Reporta los nombres de los taxones
+sample_names(mothur_data)			# Reporta los nombres de las muestras
+taxa_names(mothur_data) 			# Reporta los nombres de los taxones
 
 taxa_sums(mothur_data)  	# Reporta la suma de abundancias de un OTU para todas las muestras
 ````
@@ -143,13 +139,13 @@ Cuando accedemos a la tabla de taxonomía podemos ver que los nombres de los niv
  
 ````
 colnames(tax_table(mothur_data)) # Reporta los nombres de los taxones
-[1] "Rank1" "Rank2" "Rank3" "Rank4" "Rank5" "Rank6"
+#[1] "Rank1" "Rank2" "Rank3" "Rank4" "Rank5" "Rank6"
 
 colnames(tax_table(mothur_data)) <- c("Kingdom", "Phylum", "Class", 
                                       "Order", "Family", "Genus")
 
 colnames(tax_table(mothur_data))
-[1] "Kingdom" "Phylum"  "Class"   "Order"   "Family"  "Genus" 
+#[1] "Kingdom" "Phylum"  "Class"   "Order"   "Family"  "Genus" 
 ````
 
 ## Preparación de datos <a name="p4"></a>
@@ -159,17 +155,17 @@ Podemos cargar el set que viene con *Phyloseq*
 
 ````
 data("GlobalPatterns")
-> GlobalPatterns
-phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 19216 taxa and 26 samples ]
-sample_data() Sample Data:       [ 26 samples by 7 sample variables ]
-tax_table()   Taxonomy Table:    [ 19216 taxa by 7 taxonomic ranks ]
-phy_tree()    Phylogenetic Tree: [ 19216 tips and 19215 internal nodes ]
+GlobalPatterns
+#phyloseq-class experiment-level object
+#otu_table()   OTU Table:         [ 19216 taxa and 26 samples ]
+#sample_data() Sample Data:       [ 26 samples by 7 sample variables ]
+#tax_table()   Taxonomy Table:    [ 19216 taxa by 7 taxonomic ranks ]
+#phy_tree()    Phylogenetic Tree: [ 19216 tips and 19215 internal nodes ]
 
 data("soilrep")
->soilrep
-otu_table()   OTU Table:         [ 16825 taxa and 56 samples ]
-sample_data() Sample Data:       [ 56 samples by 4 sample variables ]
+soilrep
+#otu_table()   OTU Table:         [ 16825 taxa and 56 samples ]
+#sample_data() Sample Data:       [ 56 samples by 4 sample variables ]
 ````
 
 Antes de empezar con la filtración vamos a ver la distribución de las lecturas por muestra con un histograma. Para esto creamos una tabla con una columna llamada "sum" que muestra la cantidad de lecturas por muestra.
@@ -202,17 +198,17 @@ Si es que hay muestras con pocas lecturas o controles podemos removerlas del set
 # Si quisiéramos remover del set de mothur las muestras que tengan menos de 3000 lecturas
 mothur_data2 = prune_samples(names(which(sample_sums(mothur_data) >= 3000)), mothur_data)
 
-> mothur_data
-phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
-sample_data() Sample Data:       [ 19 samples by 1 sample variables ]
-tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
+mothur_data
+#phyloseq-class experiment-level object
+#otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
+#sample_data() Sample Data:       [ 19 samples by 1 sample variables ]
+#tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
 
-> mothur_data2
-phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 522 taxa and 17 samples ]
-sample_data() Sample Data:       [ 17 samples by 1 sample variables ]
-tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
+mothur_data2
+#phyloseq-class experiment-level object
+#otu_table()   OTU Table:         [ 522 taxa and 17 samples ]
+#sample_data() Sample Data:       [ 17 samples by 1 sample variables ]
+#tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
 ````
 
 Para seleccionar muestras usamos el comando *subset_sample()*
@@ -232,11 +228,11 @@ Para filtrar OTUs usamos el comando *prune_taxa()*
 ````
 # Este comando remuevo OTUs que contribuyan con menos de 5 lecturas a todo el set
 mothur_data3 = prune_taxa(names(which(taxa_sums(mothur_data) >= 5)), mothur_data2)
-> mothur_data3
-phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 247 taxa and 17 samples ]
-sample_data() Sample Data:       [ 17 samples by 1 sample variables ]
-tax_table()   Taxonomy Table:    [ 247 taxa by 6 taxonomic ranks ]
+mothur_data3
+#phyloseq-class experiment-level object
+#otu_table()   OTU Table:         [ 247 taxa and 17 samples ]
+#sample_data() Sample Data:       [ 17 samples by 1 sample variables ]
+#tax_table()   Taxonomy Table:    [ 247 taxa by 6 taxonomic ranks ]
 ````
 
 Si es que queremos separa grupo de OTUs de una taxonomía determinada usamos el comando *subset_taxa()*. Esto es útil si por ejemplo queremos visualizar por separado la distribución de un grupo taxonómico.
@@ -343,8 +339,8 @@ summary(factores)
 # Probamos diferencia de diversidad observada (riqueza) por tratamiento
 kruskal.test(alfa_div$Observed ~ factores$SampleType)
 
+# Graficamos la riqueza por tipo de muestras
 boxplot(alfa_div$Observed ~ factores$SampleType)
-
 ````
 
 ## Ordenaciones libres <a name="p7"></a>
@@ -390,21 +386,21 @@ tabla_metadatos = data.frame(sample_data(rare_global))
 summary(tabla_metadatos)
 
 adonis(tabla_otus ~ SampleType, data = tabla_metadatos)
-
-Call:
-adonis(formula = tabla_otus ~ SampleType, data = tabla_metadatos) 
-
-Permutation: free
-Number of permutations: 999
-
-Terms added sequentially (first to last)
-
-           Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
-SampleType  8    7.7744 0.97180  4.4259 0.67562  0.001 ***
-Residuals  17    3.7327 0.21957         0.32438           
-Total      25   11.5070                 1.00000           
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 
+#
+#Call:
+#adonis(formula = tabla_otus ~ SampleType, data = tabla_metadatos) 
+#
+#Permutation: free
+#Number of permutations: 999
+#
+#Terms added sequentially (first to last)
+#
+#           Df SumsOfSqs MeanSqs F.Model      R2 Pr(>F)    
+#SampleType  8    7.7744 0.97180  4.4259 0.67562  0.001 ***
+#Residuals  17    3.7327 0.21957         0.32438           
+#Total      25   11.5070                 1.00000           
+#---
+#Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 
 ````
 La interpretación es que los centroides para los diferente tipo de suelos son significativamente diferente (p<0.001). 
 El factor *SampleType* explica es 67.5% de la de los perfiles de OTUs.  
@@ -437,7 +433,7 @@ plot(anosim_otus)
 
 ## Ordenaciones restringidas <a name="p9"></a>
 
-Para crear ordenaciones restringidas podemos usar el comando *ordinate()*.  Vamos a trabajar con el set llamado *soilrep*. Este set de datos proviene de suelos de grases que fueron cortados o sin cortar, con y sin calentamiento. Tiene ademas un alto nivel de replicación (24 muestras * 4 tratamientos). 
+Para crear ordenaciones restringidas podemos usar el comando *ordinate()*.  Vamos a trabajar con el set llamado *soilrep*. Este set de datos proviene de suelos de pastura que fueron cortados o sin cortar, con y sin calentamiento. Tiene ademas un alto nivel de replicación (24 muestras * 4 tratamientos). 
 
 
 ````
@@ -512,7 +508,7 @@ label_map <- aes(x = 1.3 * CAP1,
 
 arrowhead = arrow(length = unit(0.02, "npc"))
 
-# Creamos una nueva grafica
+# Creamos una nueva gráfica
 cap_plot1 + 
   geom_segment(
     mapping = arrow_map, 

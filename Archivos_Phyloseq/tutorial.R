@@ -6,7 +6,6 @@ setwd("E:/Libraries/Dropbox/tutorial/")
 
 
 library(vegan)
-
 library(phyloseq)
 library(ggplot2)
 library(tidyr)
@@ -26,13 +25,13 @@ shared_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.
 tax_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.cons.taxonomy"
 metadata_file = "mouse.dpw.metadata"
 biom_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.biom"
+# Arboles importados de mothur usan los nombres de las secuencias y no de los OTUs.
+# Hay que cambiar esto manualmente.
 #tree_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.phylip.tre"
 
 
-
-
 # Importar un objeto biom
-data = import_biom(biom_file)
+mothur_data = import_biom(biom_file)
 
 
 # Alternativamente podemos agregar cada elemento individualmente
@@ -49,10 +48,6 @@ metadata = sample_data(metadata) # Convierta la tabla de metadatos en una tabla 
 mothur_data = merge_phyloseq(mothur_data0, metadata)
 
 mothur_data
-
-
-
-
 # otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
 # sample_data() Sample Data:       [ 19 samples by 1 sample variables ]
 # tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
@@ -60,16 +55,16 @@ mothur_data
 
 # Una vez que tenemos este objeto podemos usar diferente funciones para acceder a los diferentes componentes del bjeto
 
-otu_table()   # Reportta la tabla de OTUs
-sample_data() # Reporta la informacion sobre las muestras como metadatos o datos experimentales
-tax_table()   # Reporta la tabla de taxonomica de los otus
+otu_table(mothur_data)   # Reporta la tabla de OTUs
+sample_data(mothur_data) # Reporta la informacion sobre las muestras como metadatos o datos experimentales
+tax_table(mothur_data)   # Reporta la tabla de taxonomica de los otus
 
 
 ntaxa(mothur_data) # Reporta el numero de OTUs
-[1] 522
+#[1] 522
 
 nsamples(mothur_data) # Reporta el numero de muestras
-[1] 19
+#[1] 19
 
 
 sample_names(mothur_data) # Reporta los nombres de las muestras
@@ -79,7 +74,7 @@ taxa_names(mothur_data) # Reporta los nombres de los taxones
 taxa_sums(mothur_data) # Reporta la suma de abundancias de un  otu para todas las muestras
 
 
-Cuando accedemos a la tabla de taxonomia podemos ver que los nombres de los niveles no son informativos asi que podemos cambiarlos a algo mas util
+# Cuando accedemos a la tabla de taxonomia podemos ver que los nombres de los niveles no son informativos asi que podemos cambiarlos a algo mas util
  
 
 colnames(tax_table(mothur_data)) # Reporta los nombres de los taxones
