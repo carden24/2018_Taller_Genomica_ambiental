@@ -9,9 +9,9 @@ Este repositorio contiene:
 1. Las diapositivas:
 - Introducción a los análisis de diversidad [(Archivo 1).](<https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/W1_16S_analysis.pptx>)
 - Uso del gen la unidad 16S del ARNr como marcador filogenético en estudios de diversidad microbiana [(Archivo 2).](<https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/W2_16S_analysis.pptx>)
-- Uso de *Mothur* para procesamiento de datos de Illumina[(Archivo 3).](<https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/W3_16S_analysis.pptx>)
-- Analisis multivariado de comunidades [(Archivo 4).](<https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/W3_16S_analysis.pptx>)
-W5_Analisis_multivariado_de_comunidades.pptx
+- Uso de *Mothur* para procesamiento de datos de Illumina [(Archivo 3).](<https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/W3_16S_analysis.pptx>)
+- Análisis multivariado de comunidades [(Archivo 4)](<https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/W5_Analisis_multivariado_de_comunidades.pptx>)
+
   
   
 2. El tutorial para análisis de datos de Miseq usando *Mothur*:  
