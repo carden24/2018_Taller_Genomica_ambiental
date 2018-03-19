@@ -340,7 +340,7 @@ global2
 test_set = GlobalPatterns
 test_set
 global2 = prune_taxa(names(which(taxa_sums(test_set) >= 5000)), test_set)
-global2 = rarefy_even_depth(test_set)
+global2 = rarefy_even_depth(test_set, sample.size = 1000)
 global2
 
 

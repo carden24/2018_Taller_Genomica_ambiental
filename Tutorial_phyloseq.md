@@ -66,12 +66,12 @@ source("miseqR.R")
 
 ## Creación de objeto Phyloseq <a name="p3"></a>
 
-### Importación de datos] <a name="p3.1"></a>
+### Importación de datos <a name="p3.1"></a>
 
 *Phyloseq* tiene una función para la importación de archivos de *Mothur*. Es necesario copia y pegar los archivos de la sesión anterior en la carpeta de trabajo y luego usar el siguiente código en R. Si no encuentras los archivos necesarios puedes acceder a ellos [acá](https://github.com/carden24/2018_Taller_Genomica_ambiental).
 
 ````
-# Crear variables para los archivos que exportamos de *Mothur*
+# Crear variables para los archivos que exportamos de Mothur
 shared_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.shared"
 tax_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.0.03.cons.taxonomy"
 metadata_file = "mouse.dpw.metadata"
@@ -126,17 +126,17 @@ Una vez que tenemos este objeto podemos usar diferente funciones para acceder a 
 ```
 # Poner dentro del paréntesis el nombre del objeto
 
-otu_table()				# Reporta la tabla de OTUs
+otu_table()			# Reporta la tabla de OTUs
 sample_data() 			# Reporta la información sobre las muestras como metadatos o datos experimentales
 tax_table()   			# Reporta la tabla de taxonómica de los OTUs
 
-ntaxa() 				# Reporta el numero de OTUs
-nsamples() 				# Reporta el numero de muestras
+ntaxa() 			# Reporta el numero de OTUs
+nsamples() 			# Reporta el numero de muestras
 
 sample_names()			# Reporta los nombres de las muestras
 taxa_names() 			# Reporta los nombres de los taxones
 
-taxa_sums(mothur_data) 	# Reporta la suma de abundancias de un OTU para todas las muestras
+taxa_sums(mothur_data)  	# Reporta la suma de abundancias de un OTU para todas las muestras
 ````
 
 Cuando accedemos a la tabla de taxonomía podemos ver que los nombres de los niveles no son informativos así que podemos cambiarlos a algo mas útil
