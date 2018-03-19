@@ -332,76 +332,93 @@ plot(anosim_otus)
 
 # CAP
 
-GlobalPatterns
-global2 = prune_taxa(names(which(taxa_sums(GlobalPatterns) >= 1000)), GlobalPatterns)
-global2
+# Este set de datos proviene de suelos de grases que fueron cortados o sin cortar, con y sin calentamiento.
+# Tiene un alto nivel de replicacion (24 muestras * 4 tratamientos). 
+data(soilrep)
 
 
-test_set = GlobalPatterns
-test_set
-global2 = prune_taxa(names(which(taxa_sums(test_set) >= 5000)), test_set)
-global2 = rarefy_even_depth(test_set, sample.size = 1000)
-global2
+# Establecemos el valor inicial para el submuestreo al azar
+set.seed(191931)
+soil2 = rarefy_even_depth(soilrep, sample.size = 1000) # Seleccionamos 1000 sequencias por muestras
 
 
-tabla_otus2 = (otu_table(global2))
-#dist_otus2 = phyloseq::distance(global2, method = "bray")
-tabla_metadatos2 = (data.frame(sample_data(global2)))
-#summary(tabla_metadatos2$SampleType)
-#str(tabla_otus2)
+# Extraemos los componentes
+tabla_otus2 = t(otu_table(soil2))
+dist_otus2 = phyloseq::distance(soil2, method = "bray")
+tabla_metadatos2 = (data.frame(sample_data(soil2)))
 
-CAP = capscale(tabla_otus2 ~ SampleType , tabla_metadatos2, distance = "bray" )
+# Creamos modelos
 
-rowSums(tabla_otus2)
-#CAP = capscale(tabla_otus2 ~ SampleType , data = tabla_metadatos2, distance = "bray" )
-
-tabla_metadatos2$SampleType
-
-
-
-
-anova(CAP)
-
-ordiplot(CAP)
-
-
-
-coord_centroides    = data.frame(scores(CAP)$centroids[,1:2])
-coord_sitios = data.frame(scores(CAP)$sites[,1:2])
-coord_centroides
-
-ggplot(coord_sitios, aes(x=CAP1, y=CAP2)) +
-  geom_text(aes(label=rownames(coord_sitios)),size=2) +
-  geom_hline(yintercept=0, linetype="dotted") +
-  geom_vline(xintercept=0, linetype="dotted") +
-  #coord_fixed() +
-  geom_segment(data=coord_centroides, aes(x=0, xend=CAP1, y=0, yend=CAP2), 
-               color="red", arrow=arrow(length=unit(0.01,"npc"))) +
-  geom_text(data=coord_centroides, 
-            aes(x=CAP2,y=CAP2,label=rownames(coord_centroides),
-                hjust=0.5*(1-sign(CAP1)),vjust=0.5*(1-sign(CAP2))), 
-            color="red", size=4)
-
-dist_otus2
-
-# CAP ordinate
-cap_ord <- ordinate(
-  physeq = rare_soil, 
+cap_ord1 <- ordinate(
+  physeq = global2, 
   method = "CAP",
   distance = dist_otus2,
-  formula = ~ Treatment
+  formula = ~ Treatment + warmed 
 )
 
-# CAP plot
-cap_plot <- plot_ordination(
-  physeq = rare_soil, 
-  ordination = cap_ord, 
-  color = "Treatment", 
+cap_ord2 <- ordinate(
+  physeq = global2, 
+  method = "CAP",
+  distance = dist_otus2,
+  formula = ~ Treatment + warmed + Sample 
+)
+
+# Probamos el nivel de significancia de la ordenacion
+anova(cap_ord1)
+anova(cap_ord2)
+
+
+
+# Graficamos los modelos
+cap_plot1 <- plot_ordination(
+  physeq = soil2, 
+  ordination = cap_ord1, 
+  color = "clipped",
+  shape="warmed",
   axes = c(1,2)
 )
-cap_plot
+cap_plot1
 
+# Agregamos las variables ambientales como flechas
+arrowmat <- vegan::scores(cap_ord1, display = "bp")
 
+# Agregamos las etiquetas y creamos una tabla
+# Add labels, make a data.frame
+arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
+
+# Definimos la coordenadas para agregar las flechas
+arrow_map <- aes(xend = CAP1, 
+                 yend = CAP2, 
+                 x = 0, 
+                 y = 0, 
+                 shape = NULL, 
+                 color = NULL, 
+                 label = labels)
+
+# Definimos las etiquetas para agregar las flechas
+label_map <- aes(x = 1.3 * CAP1, 
+                 y = 1.3 * CAP2, 
+                 shape = NULL, 
+                 color = NULL, 
+                 label = labels)
+
+arrowhead = arrow(length = unit(0.02, "npc"))
+
+# Creamos una nueva grafica
+cap_plot1 + 
+  geom_segment(
+    mapping = arrow_map, 
+    size = .5, 
+    data = arrowdf, 
+    color = "gray", 
+    arrow = arrowhead
+  ) + 
+  geom_text(
+    mapping = label_map, 
+    size = 4,  
+    data = arrowdf, 
+    show.legend = FALSE
+  )
 
 
 

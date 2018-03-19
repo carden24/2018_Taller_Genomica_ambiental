@@ -144,10 +144,11 @@ Cuando accedemos a la tabla de taxonomía podemos ver que los nombres de los niv
 ````
 colnames(tax_table(mothur_data)) # Reporta los nombres de los taxones
 [1] "Rank1" "Rank2" "Rank3" "Rank4" "Rank5" "Rank6"
+
 colnames(tax_table(mothur_data)) <- c("Kingdom", "Phylum", "Class", 
                                       "Order", "Family", "Genus")
 
-> colnames(tax_table(mothur_data))
+colnames(tax_table(mothur_data))
 [1] "Kingdom" "Phylum"  "Class"   "Order"   "Family"  "Genus" 
 ````
 
@@ -240,13 +241,13 @@ tax_table()   Taxonomy Table:    [ 247 taxa by 6 taxonomic ranks ]
 Si es que queremos separa grupo de OTUs de una taxonomía determinada usamos el comando *subset_taxa()*. Esto es útil si por ejemplo queremos visualizar por separado la distribución de un grupo taxonómico.
 
 ````
-# Uso
+# Uso:
 # objecto_nuevo = subset_taxa(objeto, Condición)
 
-# Este comando separa todos las Actinobacteria 
+# Este comando separa todos las Actinobacteria seleccionando los OTUs cuyo Phylum es Actinobacteria
 Actinobacteria = subset_taxa(GlobalPatterns, Phylum == "Actinobacteria")
 
-# Este comando separa todos las Pseudomonas
+# Este comando separa todos las Pseudomonas seleccionando los OTUs cuyo género es Actinobacteria
 Pseudomonas = subset_taxa(GlobalPatterns, Genus == "Pseudomonas")
 ````
 
@@ -266,12 +267,10 @@ Otra alternativa es rareficar las muestras usando el comando *rarefey_even_depth
 ````
 rare_soil <-rarefy_even_depth(soilrep, rngseed=TRUE)
 ````
- 
-
 
 ## Visualización de comunidades <a name="p5"></a>
 
-Para gráficas de barra de abundancia relativa podememos utilizar el comando *plot_bar()* con objetos phyloseq. Esta función también acepta opciones para cambiar el color de relleno de las barras(e.g. fill="Phylum"), y puede separar las barras según otros factores 
+Para gráficas de barra de abundancia relativa podemos utilizar el comando *plot_bar()* con objetos phyloseq. Esta función también acepta opciones para cambiar el color de relleno de las barras(e.g. fill="Phylum"), y puede separar las barras según otros factores 
 Con este comando podemos graficar directamente o crear un objeto de tipo ggplot2 que podemos modificar.
 
 ````
@@ -296,7 +295,7 @@ phyla_plot
 phyla_plot + facet_wrap(~SampleType, nrow=1, scales="free_x")
 ````
 
-Para visualizar otros niveles de taxonomia tenemos que seleccionar subsets primero y luego graficarlos
+Para visualizar otros niveles de taxonomía tenemos que seleccionar subsets primero y luego graficarlos con *plot_bar()*.
 
 ````
 Acidos = subset_taxa(GlobalPatterns, Phylum == "Acidobacteria")
@@ -305,7 +304,7 @@ Acidos_rel_abu = transform_sample_counts(Acidos2, function(x){x/sum(x)})
 Acido_plot = plot_bar(Acidos_rel_abu, fill="Class")
 Acido_plot
 ````
-Podemos visualizar los mismos datos en un heatmap. *Phyloseq* usa ordenaciones para organizar las muestras y otus en vez de usar agrupamiento jerárquico como otros métodos tradicionales de heatmap.
+Podemos visualizar los mismos datos en un heatmap. *Phyloseq* usa ordenaciones para organizar las muestras y OTUs en vez de usar agrupamiento jerárquico como otros métodos tradicionales de heatmap.
 ````
 # Sin reordenación de columnas
 plot_heatmap(Acidos_rel_abu,  method=NULL, sample.label="SampleType", sample.order="SampleType")
@@ -434,41 +433,102 @@ plot(anosim_otus)
 
 ## Ordenaciones restringidas <a name="p9"></a>
 
-Para crear ordenaciones restringidas podemos usar el comando *ordinate()*
+Para crear ordenaciones restringidas podemos usar el comando *ordinate()*.  Vamos a trabajar con el set llamado *soilrep*. Este set de datos proviene de suelos de grases que fueron cortados o sin cortar, con y sin calentamiento. Tiene ademas un alto nivel de replicación (24 muestras * 4 tratamientos). 
 
-# CAP ordinate
-cap_ord <- ordinate(
-    physeq = rare_global, 
-    method = "CAP",
-    distance = dist_otus,
-    formula = ~ SampleType
+
+````
+data(soilrep)
+
+set.seed(191931) # Establecemos el valor inicial para el submuestreo al azar
+soil2 = rarefy_even_depth(soilrep, sample.size = 1000) # Seleccionamos 1000 secuencias por muestra
+
+# Extraemos los componentes
+tabla_otus2 = t(otu_table(soil2))
+dist_otus2 = phyloseq::distance(soil2, method = "bray")
+tabla_metadatos2 = (data.frame(sample_data(soil2)))
+
+# Creamos modelos estadisticos, uno con solo los tratamiento, el segundo considerando las replicas
+cap_ord1 <- ordinate(
+  physeq = global2, 
+  method = "CAP",
+  distance = dist_otus2,
+  formula = ~ Treatment + warmed 
 )
 
-# CAP plot
-cap_plot <- plot_ordination(
-  physeq = rare_global, 
-  ordination = cap_ord, 
-    color = "SampleType", 
-    axes = c(1,2)
-) 
+cap_ord2 <- ordinate(
+  physeq = global2, 
+  method = "CAP",
+  distance = dist_otus2,
+  formula = ~ Treatment + warmed + Sample 
+)
 
+# Probamos el nivel de significancia de la ordenación
+anova(cap_ord1)
+anova(cap_ord2)
+````
 
+Para graficar los modelos podemos usar *plot_ordination()* de nuevo.
 
-+ 
-    aes(shape = Station) + 
-    geom_point(aes(colour = Month), alpha = 0.4, size = 4) + 
-    geom_point(colour = "grey90", size = 1.5) + 
-    scale_color_manual(values = c("#a65628", "red", "#ffae19", "#4daf4a", 
-        "#1919ff", "darkorchid3", "magenta")
-    )
+````
+# Graficamos los modelos
+cap_plot1 <- plot_ordination(
+  physeq = soil2, 
+  ordination = cap_ord1, 
+  color = "clipped",
+  shape="warmed",
+  axes = c(1,2)
+)
+cap_plot1
+````
 
+Para un gráfico mas detallada podemos obtener los datos de los centroides y agregarlos manualmente.
 
+````
+# Agregamos las variables ambientales como flechas
+arrowmat <- vegan::scores(cap_ord1, display = "bp")
 
+# Agregamos las etiquetas y creamos una tabla
+arrowdf <- data.frame(labels = rownames(arrowmat), arrowmat)
+
+# Definimos la coordenadas para agregar las flechas
+arrow_map <- aes(xend = CAP1, 
+                 yend = CAP2, 
+                 x = 0, 
+                 y = 0, 
+                 shape = NULL, 
+                 color = NULL, 
+                 label = labels)
+
+# Definimos las etiquetas para agregar a las flechas
+label_map <- aes(x = 1.3 * CAP1, 
+                 y = 1.3 * CAP2, 
+                 shape = NULL, 
+                 color = NULL, 
+                 label = labels)
+
+arrowhead = arrow(length = unit(0.02, "npc"))
+
+# Creamos una nueva grafica
+cap_plot1 + 
+  geom_segment(
+    mapping = arrow_map, 
+    size = .5, 
+    data = arrowdf, 
+    color = "gray", 
+    arrow = arrowhead
+  ) + 
+  geom_text(
+    mapping = label_map, 
+    size = 4,  
+    data = arrowdf, 
+    show.legend = FALSE
+  )
+````
 
 ## Datos de la sesión <a name="p10"></a>
 
 
-Lo ultimo que se recomienda es grabar los datos de la sesión, esto es útil para poder recrear los datos completamente, especialmente si es que posteriormente se usan otras versiones de R o de alguno de los paquetes. Esta información se puede guardar al final del script.
+Finalmente se recomienda grabar los datos de la sesión, esto es útil para poder recrear los datos completamente, especialmente si es que posteriormente se usan otras versiones de R o de alguno de los paquetes. Esta información se puede guardar al final del script.
 
 ```
 sessionInfo()
@@ -484,12 +544,4 @@ load("Toda_la_session.RData") # Carga todos los objetos contenidos en el archivo
 load("un_objeto.Rdata") # Carga todos los objetos contenidos en el archivo de extensión *.Rdata*
 
 ````
-
-
-
-
-
-
-
-
 
