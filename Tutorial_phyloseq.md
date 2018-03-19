@@ -283,8 +283,7 @@ global_phyla_rel_abu = transform_sample_counts(physeq = global_phyla, function(x
 
 plot_bar(global_phyla_rel_abu, fill="Phylum")
 ````
-![Composicion a nivel phyla](https://carden24.github.com/images/phyla1.jpg)){:height="600px" width="400px"}
-<img src="https://carden24.github.com/images/phyla1.jpg" width="300">
+
 
 
 Podemos filtrar grupos raros para que la gráfica sea mas simple
