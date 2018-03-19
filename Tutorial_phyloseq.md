@@ -190,7 +190,7 @@ ggplot(sample_sum_df, aes(x = sum)) +
   xlab("Read counts")  + ylab("Frequency")
 ````
 
-**Distribución de lecturas**  
+ 
 ![Imagen de objeto Phyloseq](https://carden24.github.com/images/distribucion_lecturas.png) 
 
 
@@ -281,9 +281,10 @@ global_phyla = tax_glom(physeq = GlobalPatterns, taxrank = "Phylum")
 # Convertimos a abundancia relativa
 global_phyla_rel_abu = transform_sample_counts(physeq = global_phyla, function(x){x/sum(x)})
 
-plot_bar(global_phyla_rel_abu, fil="Phylum")
-
+plot_bar(global_phyla_rel_abu, fill="Phylum")
 ````
+![Imagen de objeto Phyloseq](https://carden24.github.com/images/phyla1.jpg) 
+
 
 Podemos filtrar grupos raros para que la gráfica sea mas simple
 
