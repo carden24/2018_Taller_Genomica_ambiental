@@ -13,6 +13,13 @@ library(tidyr)
 library(dplyr)
 
 
+
+install.packages("dplyr")
+
+mothur(data)
+
+
+
 # Crear variables para los archivos que exportamos de *Mothur*
 
 shared_file = "stability.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.unique_list.shared"
@@ -41,7 +48,11 @@ metadata = read.delim(metadata_file, header=T,row.names = 1)
 metadata = sample_data(metadata) # Convierta la tabla de metadatos en una tabla para phyloseq
 mothur_data = merge_phyloseq(mothur_data0, metadata)
 
-# > mothur_data
+mothur_data
+
+
+
+
 # otu_table()   OTU Table:         [ 522 taxa and 19 samples ]
 # sample_data() Sample Data:       [ 19 samples by 1 sample variables ]
 # tax_table()   Taxonomy Table:    [ 522 taxa by 6 taxonomic ranks ]
