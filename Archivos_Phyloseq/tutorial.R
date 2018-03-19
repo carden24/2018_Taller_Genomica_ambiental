@@ -1,4 +1,4 @@
-rm(list=ls()) 
+  rm(list=ls()) 
 
 
 setwd("E:/Libraries/Dropbox/tutorial/")
@@ -357,14 +357,14 @@ tabla_metadatos2 = (data.frame(sample_data(soil2)))
 # Creamos modelos
 
 cap_ord1 <- ordinate(
-  physeq = global2, 
+  physeq = soil2, 
   method = "CAP",
   distance = dist_otus2,
   formula = ~ Treatment + warmed 
 )
 
 cap_ord2 <- ordinate(
-  physeq = global2, 
+  physeq = soil2, 
   method = "CAP",
   distance = dist_otus2,
   formula = ~ Treatment + warmed + Sample 

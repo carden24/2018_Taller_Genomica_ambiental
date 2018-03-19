@@ -545,3 +545,30 @@ load("un_objeto.Rdata") # Carga todos los objetos contenidos en el archivo de ex
 
 ````
 
+````
+#Enterotipos
+
+data(enterotype)
+set.seed(20180319)
+
+enterotype2 = prune_samples(!is.na(sample_data(enterotype)$Enterotype), enterotype)
+enterotype2
+
+dist1 = phyloseq::distance(enterotype2, method = "bray")
+metadatos = sample_data(enterotype2)
+summary(metadatos)
+
+#capscale(dist1 ~ Enterotype, data=metadatos, sqrt=T)
+
+cap_ord2 <- ordinate(
+  physeq = enterotype2, 
+  method = "CAP",
+  distance = dist1,
+  formula = ~ SeqTech + Enterotype 
+)
+
+anova(cap_ord2)
+````
+
+
+
