@@ -186,7 +186,6 @@ sample_data(global_phyla)
 global_soil <- GlobalPatterns %>%
   subset_samples(SampleType == "Soil") %>%
   prune_taxa(taxa_sums(.) > 0, .)
-
 global_soil
 
 
@@ -194,7 +193,7 @@ global_soil
 Actinobacteria = subset_taxa(GlobalPatterns, Phylum == "Actinobacteria")
 Actinobacteria
 
-GlobalPatterns
+
 
 # Este comando separa todos las Pseudomonas
 Pseudomonas = subset_taxa(GlobalPatterns, Genus == "Pseudomonas")
@@ -250,6 +249,8 @@ plot_heatmap(Acidos_rel_abu,  # Objeto a graficar
 
 # Diversidad alfa
 
+set.seed(191931)
+rare_global <-rarefy_even_depth(GlobalPatterns, rngseed=TRUE)
 plot_richness (rare_global,color="SampleType" )
 plot_richness (mothur_data, color="dpw") 
   
