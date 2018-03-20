@@ -377,14 +377,14 @@ anova(cap_ord2)
 
 
 # Graficamos los modelos
-cap_plot1 <- plot_ordination(
+cap_plot2 <- plot_ordination(
   physeq = soil2, 
-  ordination = cap_ord1, 
+  ordination = cap_ord2, 
   color = "clipped",
   shape="warmed",
   axes = c(1,2)
 )
-cap_plot1
+cap_plot2
 
 # Agregamos las variables ambientales como flechas
 arrowmat <- vegan::scores(cap_ord1, display = "bp")
