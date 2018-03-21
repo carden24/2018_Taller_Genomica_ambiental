@@ -6,21 +6,22 @@
 # Tabla de contenidos
 
 1. [Introducción y preparativos](#p1)
-2. [Manipulación de datos con Tidiverse][(#1)
-    1. [Selección de datos]
-    2. [Reordenamiento de datos]
-    3. [Seleccionar variables]
-    4. [Creación de nuevas variables]
-    5. [Condensación de variables]
-    6. [Muestreo]
-    7. [Conexión de funciones]
+2. [Manipulación de datos con Tidiverse](#p2)
+    1. [Selección de datos](#p2.1)
+    2. [Reordenamiento de datos](#p2.2)
+    3. [Seleccionar variables](#p2.3)
+    4. [Creación de nuevas variables](#p2.4)
+    5. [Condensación de variables](#p2.5)
+    6. [Muestreo](#p2.6)
+    7. [Conexión de funciones](#p2.7)
 3. [Graficas con ggplot2](#p3)
-    1. [Formula general](#p3.1)
-    2. [Stratificando](#p3.2)
-    3. [Temas de colores](#p3.2)
+    1. [Concepto general](#p3.1)
+    2. [Estratificando](#p3.2)
+    3. [Temas de colores](#p3.3)
     4. [Paletas de colores](#p3.4)
+    5. [Grabando gráficas](#p3.5)
+    6. [Catálogo de visualizaciones](#p3.6)
 
-	
 ## Introducción y preparativos <a name="p1"></a>
 
 
@@ -180,9 +181,10 @@ gorditos  =
 gorditos  
 ````
 
-## Graficas con ggplot2](#p3)
+## Graficas con ggplot2 <a name="p3"></a>
 
-Empezamos esta sección cargando un set de datos de EEUU donde para el la decada de los 70s reporta información de población, ingreso per capita, tasa de alfabetismo, tasa de asesinatos, porcentaje de graduacion de secundaria, area, dias frios, latitud, longitud, region, división, y abreviación. 
+### Concepto general <a name="p3.1"></a>
+Empezamos esta sección cargando un set de datos de EEUU donde para el la decada de los 70s reporta información de población, ingreso per capita, tasa de alfabetismo, tasa de asesinatos, porcentaje de graduación de secundaria, area, dias frios, latitud, longitud, region, división, y abreviación. Los datos los puedes bajar de [acá](https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/Visualizacion/statedata.csv) o buscalos en la carpeta "Visualizacion" del repositorio
 
 En las siguientes gráficas demostramos como ggplot agrega capas secuencialmente
 
@@ -246,7 +248,7 @@ ggplot(state,
   geom_bar(stat="identity") # stat="identity" significa que sumamos los valores de todos los puntos de las categorias del eje x
 ````
 
-## Estratificando
+### Estratificando <a name="p3.2"></a>
 Para separar por grupos(o combinaciones) podemos usar *facet_wrap()* o *facet_grid()*
 
 
@@ -274,9 +276,9 @@ ggplot(state,
 ````
 
 
-## Temas de colores
+## Temas de colores <a name="p3.3"></a>
 
-Uno puede controlor el tema de las graficas con la opcion *theme*
+Uno puede controlar el tema de las gráficas con la opción *theme*
 
 ![Temas de ggplot2](http://r4ds.had.co.nz/images/visualization-themes.png)
 
@@ -287,15 +289,48 @@ plot4
 plot4 + theme_bw()
 
 plot4 + theme_minimal()
-
 ````
 
 
-## Paletas de colores](#p3.4)
+## Paletas de colores <a name="p3.4"></a>
+La palea de colores para utilizar se puede escoger manualmente. El paquete Colorbrewer tiene muchas buenas opciones para esto.
+
+> **Numero discreto de colores**  
+> Color de relleno  : *scale_fill_brewer()*  
+> Colores del borde : *scale_color_brewer()*  
+
+> **Numero continuo de colores**  
+> Color de relleno  : *scale_fill_distiller()*  
+> Colores del borde : *scale_color_distiller()*  
+
+
+Probando colores
+````
+install.packages("RColorBrewer")
+library(RColorBrewer)
+
+# Gráfica de puntos con tamaño proporcional a la población
+mapa = ggplot(state, 
+       aes(x=x, y=y, col=state.region, size=Population)) + geom_point() +
+  theme_void()
+
+# usamos una paleta qualitativa
+mapa + scale_color_brewer(palette = "Set1")
+
+
+# Gráfica de puntos con intensidad de color proporcionales a los ingresos per capita
+mapa2 = 
+  ggplot(state, 
+         aes(x=x, y=y, col=Income)) + geom_point(size=5) +
+  theme_void()
+
+# usamos una paleta qualitativa
+mapa2 + scale_color_distiller(palette = "Blues", direction = 1)
+````
 
 
 
-## Grabar graficas
+## Grabando gráficas <a name="p3.5"></a>
 
 El comando *ggsave()* es usado para guardar graficas actuales o objetos de graficas a archivos.
 Se pueden grabar graficas con formatos pdf, jpg, eps,svg, y png usando el commando *ggsave()*
@@ -306,16 +341,13 @@ ggsave(plot1, "plot1.jpg") # Graba plot1 actual como plot1.jpg
 ggsave(plot2, "plot2.jpg", with=6, height=4) # Graba plot2 actual como plot2.jpg usando dimensiones 6 x 4 in
 ````
 
+## Catalogo de visualizaciones <a name="p3.6"></a>
 
+En [esta página](http://shiny.stat.ubc.ca/r-graph-catalog/
+) se pueden ver diferentes tipos de visualizaciones con su código en para ggplot2.
 
-
-
-## Consejos para mejorar visualizaciones
+Aca hay buenas sugerencias para mejorar visualizaciones
 http://stat545.com/block015_graph-dos-donts.html
 
 
 
-## Catalogo de visualizaciones
-
-En esta pagina se pueden ver diferentes tipos de visualizaciones con su codigo en para ggplot2.
-http://shiny.stat.ubc.ca/r-graph-catalog/
