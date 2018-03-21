@@ -1,4 +1,4 @@
-# Tutorial de manipulación de datos y graficas en R
+# Tutorial de manipulación de datos y gráficas en R
 ### Por Erick Cardenas Poire
 
 ---
@@ -14,7 +14,7 @@
     5. [Condensación de variables](#p2.5)
     6. [Muestreo](#p2.6)
     7. [Conexión de funciones](#p2.7)
-3. [Graficas con ggplot2](#p3)
+3. [Gráficas con ggplot2](#p3)
     1. [Concepto general](#p3.1)
     2. [Estratificando](#p3.2)
     3. [Temas de colores](#p3.3)
@@ -36,7 +36,7 @@ getwd()
 library(dplyr)
 library(ggplot2)
 
-# Si es que las librerias no estan instalada usa este comando y reintenta cartgar las librerias.
+# Si es que las librerías no están instaladas usa este comando y reintenta cargar las librerías.
 install.packages("tidyverse")
 
 ````
@@ -59,11 +59,10 @@ data(starwars) # cargamos el set requerido
 # vehicles: Lista de vehiculos que el personaje piloteo
 # starships: Lista de naves que el personaje piloteo
 ````
-Si es que trabajamos como una tabla de datos (data frame) es necesario convertirla primero a un objeto de clase table_df con el comando *table_df*.
 
 *Dplyr* provee una función por cada acción básica en la manipulación de datos:  
 ````
-# filter()# Seleccion de datos
+# filter()# Selección de datos
 # arrange() # Reordenamiento de datos
 # select() y rename() para seleccionar variables
 # mutate() y transmute() para crear nuevas variables en funcion de variables pre-existentes
@@ -129,12 +128,12 @@ Con *mutate()* creamos variables nuevas y la agregamos al set seleccionado, con 
 # Uso:
 # mutate(datos nueva_variable1 = formula1)
 # transmutate(datos nueva_variable2 = formula2)
-SW_new = mutate(starwars, bmi = height/mass)
+SW_new = mutate(starwars, bmi = (mass / (height/100)^2))
 ````
 
 ## Condensación de variables <a name="p2.5"></a>
 
-Usamos la función *summarize()* para crear una nueva table que resuma una o varias variables. Es útil cuando la usamos en combinación con la *funcion group_by()*
+Usamos la función *summarize()* para crear una nueva table que resuma una o varias variables. Es útil cuando la usamos en combinación con la función *group_by()*
 
 ```
 # Modificamos el objeto para después resumir los datos por la variable "homeworld" y "gender"
@@ -153,7 +152,7 @@ promedios
 
 ## Muestreo <a name="p2.6"></a>
 
-Para tomar muestras de tamano N usamos la funcion *sample_n()*, para tomar una fraccion del set usamos *sample_frac()*.
+Para tomar muestras de tamaño N usamos la función *sample_n()*, para tomar una fraccion del set usamos *sample_frac()*.
 
 ````
 set.seed(191931)
@@ -165,7 +164,7 @@ sample_frac(starwars, 0.5)
 
 ## Conexión de funciones <a name="p2.7"></a>
 
-Finalmente podemos utilizar el simbolo %>% como una tuberia. Esta tuberia toma los datos del lado izquierdo y se los pasa como input a la funcion de la derecha. De esta manera no generamos archivos intermedios
+Finalmente podemos utilizar el símbolo %>% como una tubería. Esta tubería toma los datos del lado izquierdo y se los pasa como input a la función de la derecha. De esta manera no generamos archivos intermedios
 
 ````
 # Uso:
@@ -184,7 +183,7 @@ gorditos
 ## Graficas con ggplot2 <a name="p3"></a>
 
 ### Concepto general <a name="p3.1"></a>
-Empezamos esta sección cargando un set de datos de EEUU donde para el la decada de los 70s reporta información de población, ingreso per capita, tasa de alfabetismo, tasa de asesinatos, porcentaje de graduación de secundaria, area, dias frios, latitud, longitud, region, división, y abreviación. Los datos los puedes bajar de [acá](https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/Visualizacion/statedata.csv) o buscalos en la carpeta "Visualizacion" del repositorio
+Empezamos esta sección cargando un set de datos de EEUU donde para el la década de los 70s reporta información de población, ingreso per capita, tasa de analfabetismo, tasa de asesinatos, porcentaje de graduación de secundaria, area, dias frios, latitud, longitud, region, división, y abreviación. Los datos los puedes bajar de [acá](https://github.com/carden24/2018_Taller_Genomica_ambiental/raw/master/Visualizacion/statedata.csv) o buscalos en la carpeta "Visualizacion" del repositorio
 
 En las siguientes gráficas demostramos como ggplot agrega capas secuencialmente
 
@@ -293,7 +292,7 @@ plot4 + theme_minimal()
 
 
 ## Paletas de colores <a name="p3.4"></a>
-La palea de colores para utilizar se puede escoger manualmente. El paquete Colorbrewer tiene muchas buenas opciones para esto.
+La palea de colores para utilizar se puede escoger manualmente. El paquete **Colorbrewer** tiene muchas buenas opciones para esto.
 
 > **Numero discreto de colores**  
 > Color de relleno  : *scale_fill_brewer()*  
@@ -314,7 +313,7 @@ mapa = ggplot(state,
        aes(x=x, y=y, col=state.region, size=Population)) + geom_point() +
   theme_void()
 
-# usamos una paleta qualitativa
+# usamos una paleta cualitativa
 mapa + scale_color_brewer(palette = "Set1")
 
 
@@ -324,7 +323,7 @@ mapa2 =
          aes(x=x, y=y, col=Income)) + geom_point(size=5) +
   theme_void()
 
-# usamos una paleta qualitativa
+# usamos una paleta cuantitativa
 mapa2 + scale_color_distiller(palette = "Blues", direction = 1)
 ````
 
@@ -332,8 +331,8 @@ mapa2 + scale_color_distiller(palette = "Blues", direction = 1)
 
 ## Grabando gráficas <a name="p3.5"></a>
 
-El comando *ggsave()* es usado para guardar graficas actuales o objetos de graficas a archivos.
-Se pueden grabar graficas con formatos pdf, jpg, eps,svg, y png usando el commando *ggsave()*
+El comando *ggsave()* es usado para guardar gráficas actuales o objetos de gráficas a archivos.
+Se pueden grabar gráficas con formatos pdf, jpg, eps,svg, y png usando el commando *ggsave()*
 
 ````
 ggsave("plot4.jpg")        # Graba plot actual como plot4.jpg
@@ -346,7 +345,7 @@ ggsave(plot2, "plot2.jpg", with=6, height=4) # Graba plot2 actual como plot2.jpg
 En [esta página](http://shiny.stat.ubc.ca/r-graph-catalog/
 ) se pueden ver diferentes tipos de visualizaciones con su código en para ggplot2.
 
-Aca hay buenas sugerencias para mejorar visualizaciones
+Acá hay buenas sugerencias para mejorar visualizaciones
 http://stat545.com/block015_graph-dos-donts.html
 
 
