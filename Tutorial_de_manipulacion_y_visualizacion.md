@@ -336,8 +336,8 @@ Se pueden grabar gráficas con formatos pdf, jpg, eps,svg, y png usando el comma
 
 ````
 ggsave("plot4.jpg")        # Graba plot actual como plot4.jpg
-ggsave(plot1, "plot1.jpg") # Graba plot1 actual como plot1.jpg
-ggsave(plot2, "plot2.jpg", with=6, height=4) # Graba plot2 actual como plot2.jpg usando dimensiones 6 x 4 in
+ggsave(filename = "plot1.jpg", plot = plot1, ) # Graba plot1 actual como plot1.jpg
+ggsave(plot=plot2, filename = "plot2.jpg", width=6, height=4) # Graba plot2 actual como plot2.jpg usando dimensiones 6 x 4 in
 ````
 
 ## Catalogo de visualizaciones <a name="p3.6"></a>
